@@ -1,0 +1,59 @@
+% ---------
+% --------
+%!TEX TS-program = pdflatex
+%!TEX encoding = UTF-8 Unicode
+%!TEX spellcheck = English (Aspell)
+
+\documentclass[11pt]{article}
+\usepackage{lucy,handout,graphicx}
+\usepackage{fourier-orns}
+\usepackage{mathtools}
+\usepackage[normalem]{ulem} % either use this (simple) or
+
+\allowdisplaybreaks
+
+\begin{document}
+
+\noindent Name \underline{\hspace{12cm}}\\
+
+
+\begin{center}
+\LARGE\textbf{Quiz 2---alternate}%
+\end{center}
+
+
+
+\begin{enumerate}
+%\parindent 1.5em \itemsep 4ex plus 0.5fil
+
+%----------------------------------------------------------------------
+ 
+\item (6 points) Suppose you have algorithms with the following runtimes.
+(Assume these are exact running times as a function of the input size $n$, not
+asymptotic running times.) How much slower do these algorithms get when you
+double the input size? (You can find this by dividing the runtime on $2n$ by the
+runtime on $n$). You should simplify your answer as much as possible, including evaluating
+logarithms when possible.
+
+\begin{enumerate}[(a)]
+    \item $2n^2$ 
+\vspace{1in}
+    \item $\log_2 (2 \cdot n)$
+\vspace{1in}
+    \item $5^{n}$
+\end{enumerate}
+\vspace{1in}
+
+\item (4 points) Simplify the following Big-O notation so that $f(n) = O\Big(g(n)\Big)$. The function $g(n)$ should be
+        both as simple and as tight as possible. For example, if $f(n) = 3n^2 + 5n + 2$,
+        then the answer should be $O(n^2)$, even though $O(n^3)$ is also correct but not as tight, and $O(n^2+2)$ is also
+        correct but not fully simplified.
+
+\begin{enumerate}[(a)]
+    \item $f(n) = n \cdot \log(3\cdot n^{2}) + 5n$. What is $g(n)$?
+\end{enumerate}
+        
+
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%
+\end{document}

@@ -1,0 +1,124 @@
+% ---------
+% --------
+%!TEX TS-program = pdflatex
+%!TEX encoding = UTF-8 Unicode
+%!TEX spellcheck = English (Aspell)
+\documentclass[11pt]{article}
+\usepackage{lucy,handout,graphicx}
+\usepackage[utf8]{inputenc}		% Allow some non-ASCII Unicode in source
+\usepackage{tikz}
+
+\def\Cdot{\mathbin{\text{\normalfont \textbullet}}}
+\def\Sym#1{\texttt{\color{BrickRed}#1}}
+\def\BlueSym#1{\textbf{\texttt{\color{RoyalBlue}#1}}}
+\allowdisplaybreaks
+
+\newtheorem{theorem}{Claim}
+
+% =========================================================
+%   Define common stuff for solution headers
+% =========================================================
+\Class{CSCI 332}
+\Semester{Fall 2026}
+
+% =========================================================
+\begin{document}
+
+% ---------------------------------------------------------
+
+
+\headers{CSCI 332}{Homework 1 Solutions}{Fall 2025}
+
+\begin{enumerate}
+\item
+For your upcoming family reunion, you are in charge of one of the day's activities.
+You decide to have the family head out in two-person canoes. However, you know that
+you need to be careful in pairing your family members up, because they can get jealous
+if they get stuck spending time with one person when they would prefer to spend time with another.
+Because you are taking CSCI 332, you wonder if you could re-work the stable matching
+definition from the hospital-student problem to work for your canoe pair problem. You consider
+asking each family member to order the rest of the family members according to their
+preference for a canoe partner.
+
+For example, for $n=4$ family reunion attendees, you might get the following list:
+
+\begin{center}
+\begin{tabular}{ c c c }
+    Alice: Ben, Cleo, Desiree \\
+    Ben: Cleo, Alice, Desiree \\
+    Cleo: Alice, Ben, Desiree\\
+    Desiree: Alice, Ben, Cleo
+\end{tabular}
+\end{center}
+
+
+\begin{enumerate}[(a)]
+    \item 
+Re-work the definition of stable matching from the hospital-medical student
+        version of the problem to the canoe pair version of the problem.
+        You should describe the input of the problem and the desired output of the problem.
+
+\begin{Solution}
+    The canoe pair stable matching problem is defined as follows:
+
+    \noindent \emph{Input:} A set of $n$ family members, each of whom ranks the other
+    $n-1$ players in order of preference to be their canoe partner. Assume that $n$
+    is even.
+
+    \noindent \emph{Output:} A matching of the $n$ family members into $n/2$
+    pairs that is \emph{perfect} (every family member is in exactly one pair) and \emph{stable}: that is,
+    no two family members who are not currently paired up prefer one another over their current
+    pair.
+    
+\end{Solution}
+
+\item 
+
+Does a stable matching always exist for the canoe pair problem?
+
+
+\begin{Solution}
+
+    No.
+    
+\end{Solution}
+
+\item 
+How do you know?
+
+\begin{Solution}
+
+   To show that there is not always a stable matching, we can give an example
+   input where no such matching exists. Conveninently, the example above is such an input!
+   To see why there is no stable matching, consider every perfect matching possible
+   for this input.
+   \begin{itemize}
+    \item $M = \{\{A,B\}, \{C, D\}\}$: in this case, $B$ and $C$ form an
+    unstable pair, since $B$ prefers $C$ over $A$ and $C$ prefers $B$ over $D$.
+    \item $M = \{\{A,C\}, \{B, D\}\}$: in this case, $A$ and $B$ form an
+    unstable pair, since $A$ prefers $B$ over $C$ and $B$ prefers $A$ over $D$.
+    \item $M = \{\{A,D\}, \{B, C\}\}$: in this case, $A$ and $C$ form an
+    unstable pair, since $A$ prefers $C$ over $D$ and $C$ prefers $A$ over $B$.
+   \end{itemize} 
+\end{Solution}
+
+
+\end{enumerate}
+\item Back to the hospital-student stable matching problem: describe
+and analyze an efficient algorithm to determine whether a given set of preferences
+has a \emph{unique} stable matching.
+
+\begin{Solution}
+As we saw in class, the Gale-Shapley algorithm produces the ``best'' matching for the proposers
+and the ``worst'' matching for the proposees. So we can run Gale-Shapley twice, once with hosptials proposing
+and once with students proposing. If the resulting matchings are the same, then it is the unique stable matching
+for the input. Otherwise, there are at least two distinct matchings. 
+
+Each run of Gale-Shapley takes $O(n^2)$ time, and checking whether the outputs are equal is also $O(n^2)$ time,
+so the runtime is $O(n^2)$ overall.
+\end{Solution}
+
+\end{enumerate}
+
+\end{document}
+
