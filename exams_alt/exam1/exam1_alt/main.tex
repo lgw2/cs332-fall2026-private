@@ -1,0 +1,246 @@
+% Alternate exam. Question styles informed by the public Exam 1 collected
+% problems and Practice 1 and 2; instances and questions are new.
+%!TEX TS-program = pdflatex
+\documentclass[11pt]{article}
+\usepackage{lucy,handout,graphicx}
+\usepackage{fourier-orns,mathtools}
+\usepackage{tikz}
+\allowdisplaybreaks
+\newcommand{\sectiontitle}[1]{\begin{center}\LARGE\textbf{#1}\end{center}}
+\newcommand{\answerline}{\underline{\hspace{8cm}}}
+\begin{document}
+\noindent Name \underline{\hspace{12cm}}\\
+\begin{center}
+\Large\textbf{CSCI 332, Fall 2026}\\
+\LARGE\textbf{Exam 1 (Alternate Version)}
+\end{center}
+\noindent This exam consists of the following sections:
+\begin{enumerate}
+\item Stable Matching (25 points)
+\item Algorithm Analysis (25 points)
+\item Recursion (25 points)
+\item 1D Dynamic Programming (25 points)
+\end{enumerate}
+You may use a double-sided $3\times5$ handwritten notecard of notes during the test but no other resources.
+
+Good luck!
+\newpage
+\sectiontitle{Section 1 (Stable Matching)}
+\begin{enumerate}
+\item (15 points total) Consider the preference lists below, listed from most preferred to least preferred, and the proposed matching
+\[
+M=\{(h_1,s_2),(h_2,s_4),(h_3,s_1),(h_4,s_3)\}.
+\]
+\begin{center}
+\begin{tabular}{c|cccc}
+Hospital & 1st & 2nd & 3rd & 4th\\\hline
+$h_1$ & $s_4$ & $s_2$ & $s_1$ & $s_3$\\
+$h_2$ & $s_2$ & $s_1$ & $s_4$ & $s_3$\\
+$h_3$ & $s_3$ & $s_1$ & $s_4$ & $s_2$\\
+$h_4$ & $s_1$ & $s_3$ & $s_2$ & $s_4$\\\hline
+Student & 1st & 2nd & 3rd & 4th\\\hline
+$s_1$ & $h_3$ & $h_2$ & $h_4$ & $h_1$\\
+$s_2$ & $h_2$ & $h_1$ & $h_4$ & $h_3$\\
+$s_3$ & $h_4$ & $h_3$ & $h_1$ & $h_2$\\
+$s_4$ & $h_1$ & $h_2$ & $h_3$ & $h_4$\\
+\end{tabular}
+\end{center}
+For each pair below, circle whether it is an \textbf{unstable pair with respect to $M$} and briefly explain why. Each part is worth 5 points.
+\begin{enumerate}[(a)]
+\item $(h_1,s_4)$ \hfill Yes \qquad No
+\vspace{1.05in}
+\item $(h_2,s_1)$ \hfill Yes \qquad No
+\vspace{1.05in}
+\item $(h_4,s_3)$ \hfill Yes \qquad No
+\vspace{.8in}
+\end{enumerate}
+\newpage
+\item (10 points) In the \textbf{stable roommate problem}, there is one set of an even number of people. Each person ranks every other person in strict order of preference. A matching divides everyone into disjoint pairs, so that every person has exactly one roommate.
+
+An \textbf{unstable pair} is a pair of people who are not matched to each other and who each prefer the other to their assigned roommate. A matching is \textbf{stable} if it has no unstable pair.
+
+Consider the following instance. Preferences are listed from most preferred to least preferred.
+\begin{center}
+\begin{tabular}{c|ccc}
+Person & 1st & 2nd & 3rd\\\hline
+Alex & Blair & Casey & Drew\\
+Blair & Casey & Alex & Drew\\
+Casey & Alex & Blair & Drew\\
+Drew & Alex & Blair & Casey\\
+\end{tabular}
+\end{center}
+Does a stable roommate matching exist for this instance? Justify your answer. If you claim that none exists, explain why \textbf{every possible matching} has an unstable pair.
+\vfill
+\newpage
+\sectiontitle{Section 2 (Algorithm Analysis)}
+\item (9 points total) For each exact runtime $T(n)$ below, compute and simplify the \textbf{doubling ratio} $T(2n)/T(n)$. These are exact runtimes, not asymptotic bounds. Assume $n>1$. Each part is worth 3 points.
+\begin{enumerate}[(a)]
+\item $T(n)=7n^3$
+\vspace{1in}
+\item $T(n)=5\log_3 n$
+\vspace{2in}
+\item $T(n)=4\cdot 2^n$
+\vspace{1in}
+\end{enumerate}
+\item (5 points) Recall: $f(n)$ is $\Omega(g(n))$ if there exist positive constants $c$ and $n_0$ such that $f(n)\geq c\cdot g(n)$ for every integer $n\geq n_0$.
+
+
+\textbf{Select all pairs} $(n_0,c)$ below that can be used to show that $6n^2+3n$ is $\Omega(n^2)$.
+\begin{enumerate}[A.]
+\item $n_0=1$, $c=6$
+\item $n_0=1$, $c=9$
+\item $n_0=3$, $c=5$
+\item $n_0=10$, $c=7$
+\item $n_0=2$, $c=\tfrac12$
+\end{enumerate}
+\newpage
+\item (6 points) Order the functions from asymptotically smallest to asymptotically largest. Label the smallest growth class 1, the next distinct growth class 2, and so on. Give the same number to functions that are $\Theta$ of each other. 
+\begin{itemize}
+\item[\underline{\hspace{.6cm}}] $n^{3/2}$
+\item[\underline{\hspace{.6cm}}] $\log_5(n^5)$
+\item[\underline{\hspace{.6cm}}] $n\log_2 n$
+\item[\underline{\hspace{.6cm}}] $2^{\log_2 n}$
+\item[\underline{\hspace{.6cm}}] $(\log_{10} n)^2$
+\item[\underline{\hspace{.6cm}}] $11\log_2 n+7$
+\end{itemize}
+\vspace{.35in}
+\item (5 points) Circle all functions $f(n)$ such that the runtime of Algorithm-1 below is $\Theta(f(n))$.
+\begin{algo}
+Algorithm-1(array $A[1..n]$):\+\\
+Result = 0\\
+For $i$ from 1 to $n$:\+\\
+$j=1$\\
+While $j\leq n$:\+\\
+Result = Result + $A[j]$\\
+$j=2j$\-\-\\
+Return Result
+\end{algo}
+\begin{enumerate}[A.]
+\item $n$
+\item $\log n$
+\item $n\log n$
+\item $n^2$
+\item $n^3$
+\end{enumerate}
+
+\vfill
+\newpage
+\sectiontitle{Section 3 (Recursion)}
+\item (15 points total) Consider $T(n)=3T(n/3)+n$, with $T(1)=1$.
+\begin{enumerate}[(a)]
+\item (5 points) Draw the first three levels of the recursion tree in the left boxes, labeling each node with its nonrecursive work. Write the total work at each level in the right boxes.
+\begin{center}
+\begin{tikzpicture}
+\foreach \y/\lev in {5/0,2.5/1,0/2} {
+\node[draw,minimum width=8.6cm,minimum height=2.2cm,anchor=north west] at (0,\y) {};
+\node[anchor=north west,font=\scriptsize] at (0,\y) {Level \lev};
+\node[draw,minimum width=3.7cm,minimum height=2.2cm,anchor=north west] at (9,\y) {};
+\node[anchor=north west,font=\scriptsize] at (9,\y) {Total work};
+}
+\end{tikzpicture}
+\end{center}
+\item (3 points) Give the total work at level $\ell$ in terms of $n$ and $\ell$.
+\vspace{.55in}
+\item (2 points) Is the work per level increasing, decreasing, or the same? Circle one.
+\vspace{.25in}
+\item (3 points) How many levels are in the tree, as a function of $n$?
+\vspace{.55in}
+\item (2 points) Give a tight asymptotic bound for $T(n)$ using $\Theta$ notation.
+\vspace{.55in}
+\end{enumerate}
+\newpage
+\item (10 points) Given the following (meaningless) divide and conquer algorithm,
+what is the recurrence relation that describes its running time?
+
+    \begin{algo}
+    wow(integer array $A$ of length $n$): \+ \\
+    if $n \leq 1$:\+\\
+        return $A$\-\\
+    else:\+\\
+    Let $A_1, A_2, A_3$ be the first third, middle third, and last third of $A$\\
+    $X_1$ = wow($A_1$)\\
+    $X_2$ = wow($A_2$)\\
+    $X_3$ = wow($A_3$)\\
+    let array $C$ be a new array of length $n$\\
+    for $i$ from 1 to $n$:\+\\
+        for $j$ from 1 to $n$:\+\\
+            $C[i \% j] = \textrm{first element of } X_1 + \textrm{middle element of
+            }X_2 +\textrm{last element of } X_3$\-\-\\
+    return $C$\-\\
+    \end{algo}
+
+$T(1) =$ \underline{\hspace{2cm}}\\
+
+$\begin{array}{lccc}
+T(n) = & \underline{\hspace{5cm}} & + & \underline{\hspace{5cm}} \\[2pt]
+& \text{work done by recursive calls} & &  \text{nonrecursive work}
+\end{array}$
+
+\newpage
+\sectiontitle{Section 4 (1D Dynamic Programming)}
+\item (8 points total) A set of monkey bars has bars numbered $0$ through $n$. You start hanging from bar 0 and want to reach bar $n$. On each swing, you can move forward either 1 bar or 2 bars. Two ways are different if their sequences of swing lengths differ.
+
+\textbf{Let $Ways(i)$ be the number of ways to reach bar $i$ from bar 0 using these swings.}
+\begin{enumerate}[(a)]
+\item (2 points) What is $Ways(4)$?
+\vspace{.7in}
+\item (6 points) Write the recursive definition for $Ways(i)$ for all integers $i\geq0$, including the necessary base cases. You may not need every line provided.
+\begin{equation*}
+Ways(i)=
+\begin{cases}
+\underline{\hspace{3.5in}} & \text{if } i\ \underline{\hspace{.5in}} \\
+\underline{\hspace{3.5in}} & \text{if } i\ \underline{\hspace{.5in}} \\
+\underline{\hspace{3.5in}} & \text{if } i\ \underline{\hspace{.5in}} \\
+\underline{\hspace{3.5in}} & \text{if } i\ \underline{\hspace{.5in}} \\
+\underline{\hspace{3.5in}} & \text{if } i\ \underline{\hspace{.5in}}
+\end{cases}
+\end{equation*}
+\end{enumerate}
+\newpage
+\item (9 points total) Consider the following meaningless recursive definition, where $H[1..n]$ is a given array:
+\[
+wut(i)=\begin{cases}
+2 & \text{if }i=1,\\
+H[2] & \text{if }i=2,\\
+-1 & \text{if }i=3,\\
+\max\{H[i]+wut(i-1),\;2wut(i-3)\} & \text{if }4\leq i\leq n.
+\end{cases}
+\]
+\begin{enumerate}[(a)]
+\item (2 points) We will store $wut(i)$ in $M[i]$. Should we fill the array from left to right or right to left?
+\vspace{.7in}
+\item (7 points) Complete the pseudocode to compute $wut(n)$, given $H[1..n]$. Include the base cases, the loop that fills the table, and the return statement.
+\begin{algo}
+MemoizedWut($H[1..n]$):\+\\
+Let $M[1..n]$ be a new array\\
+\# initialize the base cases\\[.8in]
+\# fill the rest of the array\\[1.3in]
+\# return the final answer\\[.55in]
+\hspace{5in}
+\end{algo}
+\end{enumerate}
+\newpage
+\item (8 points total) Consider the following variant of the text segmentation problem from Homework 6: Given an array $A[1..n]$ of characters, compute the number of unique partitions of $A$ into words. For example, for \texttt{ARTISTOIL}, the two partitions are \texttt{ARTIST OIL} and \texttt{ART IS TOIL} (assuming these are the only valid partitions).
+
+Assume you have a subroutine $\textsc{IsWord}$ that takes an array of characters as input and returns $\textsc{True}$ if and only if that string is a word. Words are nonempty, and two partitions are different if their boundary positions differ.
+
+Recall the following recursive algorithm for deciding whether the suffix $A[i..n]$ can be partitioned into words. The array $A$ and its length $n$ are available to every recursive call.
+\begin{algo}
+\underline{Splittable($i$):}\+\\
+if $i>n$:\+\\
+return True\-\\
+for $j$ from $i$ to $n$:\+\\
+if \textsc{IsWord}($A[i..j]$):\+\\
+if Splittable($j+1$):\+\\
+return True\-\-\-\\
+return False
+\end{algo}
+Now let $CountSplits(i)$ be the \textbf{number of unique partitions} of the suffix $A[i..n]$ into words.
+\begin{enumerate}[(a)]
+\item (2 points) If $A=\texttt{aaaa}$ and the only words that \textsc{IsWord} recognizes are \texttt{a} and \texttt{aa}, what is $CountSplits(1)$?
+\vspace{.45in}
+\item (6 points) Write a \textbf{recursive algorithm} $CountSplits(i)$ to compute this count, using the algorithm above as a starting point. Include the base case for the empty suffix. Your algorithm should return 0 if there is no valid partition. The final answer is $CountSplits(1)$. You do not need to memoize your algorithm.
+\vfill
+\end{enumerate}
+\end{enumerate}
+\end{document}

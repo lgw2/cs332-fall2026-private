@@ -1,0 +1,335 @@
+%!TEX TS-program = pdflatex
+%!TEX encoding = UTF-8 Unicode
+%!TEX spellcheck = English (Aspell)
+
+\documentclass[11pt]{article}
+\usepackage{lucy,handout,graphicx}
+
+% =========================================================
+\begin{document}
+
+\headers{CSCI 332}{``Quiz 6'' group activity solutions}{Fall 2026}
+
+\noindent 
+For each of the problems below, transform the input into a graph and apply a standard graph algorithm that you’ve seen in class.  Whenever you use a standard graph algorithm, you \EMPH{must} provide the following information.  (I recommend actually using a bulleted list.)
+\begin{itemize}\itemsep0pt
+\item What are the vertices?  What does each vertex represent?
+\item What are the edges?  Are they directed or undirected?
+\item If the vertices and/or edges have associated values, what are they?
+\item \textbf{What is the precise relationship between your graph and the stated problem?}
+\item What standard graph algorithm are you using to solve the problem?
+\item What is the running time of your entire algorithm, \emph{including} the time to build the graph, \emph{as a function of the original input parameters}?
+\end{itemize}
+Finally, it is crucial to remember that even when you are explicitly given a graph as part of the input, that may not be the graph you actually want to search!
+
+\bigskip
+\hrule
+\medskip
+
+\begin{enumerate}
+\parindent 1.5em \itemsep 2ex
+
+%----------------------------------------------------------------------
+\item
+Describe and analyze an efficient algorithm that either returns the minimum number of moves required to solve a given number maze $M[\range{1}{n}, \range{1}{n}]$, or correctly reports that the maze has no solution.
+
+\begin{Solution}
+We construct a directed graph $G=(V,E)$ as follows.
+\begin{itemize}
+\item
+The vertices of $G$ correspond to (indices of) grid cells:
+\[
+	V := \set{i\mid 1\le i\le n} \times \set{j\mid 1\le i\le n}
+\]
+There are exactly $n^2$ vertices.
+
+\item
+The directed edges of $G$ correspond to legal moves; more formally, $E = E_\leftrightarrow \cup E_\updownarrow$, where
+\begin{align*}
+	E_\leftrightarrow := {}&
+		\Setbar{(i,j)\arcto(i,j’)\strut}{\abs{j-j’} = M[i,j]}
+				&& \text{[horizontal edges]} \\
+	E_\updownarrow := {}&
+		 \Setbar{(i,j)\arcto(i’,j)\strut}{\abs{i-i’} = M[i,j]}
+				&& \text{[vertical edges]}
+\end{align*}
+There are at most $4n^2$ edges.
+
+\item
+The vertices and edges do not have associated values.  In particular, each integer $M[i,j]$ is already encoded into the edges leaving vertex $(i,j)$.
+
+\item
+Any sequence of legal moves in number maze $M$ corresponds to a directed path in graph $G$, and vice versa.  In particular, the shortest sequence of legal moves from the upper left corner to the lower right corner corresponds to the shortest path in $G$ from $(1,1)$ to $(n,n)$.
+
+\item
+We can compute this shortest path using breadth-first search.
+
+\item
+Our algorithm runs in $O(V+E) =$ \EMPH{$O(n^2)$ time}.
+
+\end{itemize}
+\end{Solution}
+
+
+%----------------------------------------------------------------------
+\newpage
+\item
+Suppose a sequence of moves is considered \emph{valid} if and only if the moves  alternate between horizontal and vertical.  That is, a valid move sequence never has two horizontal moves in a row or two vertical moves in a row.
+
+Describe and analyze an algorithm that either returns the minimum number of moves in a valid solution to a given number maze, or reports correctly that no valid solution exists.
+
+\begin{Solution}
+We construct a directed graph $G=(V,E)$ as follows.
+
+\begin{itemize}
+\item
+There are two vertices of $G$ for each grid cell, each corresponding to the orientation of the next move out of that cell.
+\[
+	V := \set{i\mid 1\le i\le n}
+			\times \set{j\mid 1\le i\le n}
+			\times \set{\updownarrow,\leftrightarrow}
+\]
+There are exactly $2n^2$ vertices.
+
+\item
+The directed edges of $G$ correspond to legal moves; more formally, $E = E_\leftrightarrow \cup E_\updownarrow$, where
+\begin{align*}
+	E_\leftrightarrow := {}&
+		\Setbar{(i,j,\leftrightarrow)\arcto(i,j’,\updownarrow)\strut}
+				{\abs{j-j’} = M[i,j]}
+				&& \text{[horizontal edges]} \\
+	E_\updownarrow := {}&
+		 \Setbar{(i,j,\updownarrow)\arcto(i’,j,\leftrightarrow)\strut}
+		 		{\abs{i-i’} = M[i,j]}
+				&& \text{[vertical edges]}
+\end{align*}
+There are at most $4n^2$ edges.
+
+\item
+The vertices and edges do not have associated values.  In particular, each integer $M[i,j]$ is already encoded into the edges leaving vertex $(i,j)$.
+
+\item
+Any sequence of legal moves in number maze $M$ corresponds to a directed path in graph $G$, and vice versa.  In particular, the shortest sequence of legal moves from the upper left corner to the lower right corner corresponds to the shortest path in $G$ from either $(1,1,\updownarrow)$ or $(1,1,\leftrightarrow)$, to either $(n,n,\updownarrow)$ or $(n,n,\leftrightarrow)$.
+
+\item
+We can compute all four shortest paths from $(1,1,?)$ to $(n,n,?)$ using two calls two breadth-first search,  starting at $(1,1,\updownarrow)$ and $(1,1,\leftrightarrow)$, and then return the shortest of those four shortest paths.
+
+\item
+Our algorithm runs in $O(V+E) =$ \EMPH{$O(n^2)$ time}.
+
+\end{itemize}
+The graph $G$ is a standard product construction between the basic number-maze graph, described in our solution to problem 1, and a cycle of length $2$.
+\end{Solution}
+
+%----------------------------------------------------------------------
+\newpage
+\item
+Suppose a sequence of moves is considered \emph{valid} if and only if its length (the number of moves) is a multiple of $5$.
+
+Describe and analyze an algorithm that either returns the minimum number of moves in a valid solution to a given number maze, or reports correctly that no valid solution exists.
+
+\begin{Solution}
+We construct a directed graph $G=(V,E)$ as follows.
+\begin{itemize}
+\item
+There are five vertices of $G$ for each grid cell, each corresponding to a different remainder mod 5:
+\[
+	V := \set{i\mid 1\le i\le n}
+			\times \set{j\mid 1\le i\le n}
+			\times \set{0,1,2,3,4}
+\]
+There are exactly $5n^2$ vertices.
+
+\item
+The directed edges of $G$ correspond to legal moves; more formally, $E = E_\leftrightarrow \cup E_\updownarrow$, where
+\begin{align*}
+	E_\leftrightarrow := {}&
+		\Setbar{(i,j,r)\arcto(i,j’,r+1\bmod 5)\strut}{\abs{j-j’} = M[i,j]}
+	\\
+	E_\updownarrow := {}&
+		 \Setbar{(i,j,r)\arcto(i’,j,r+1\bmod 5)\strut}{\abs{i-i’} = M[i,j]}
+\end{align*}
+There are at most $20n^2$ edges.
+
+\item
+The vertices and edges do not have associated values.  In particular, each integer $M[i,j]$ is already encoded into the edges leaving each vertex $(i,j,r)$.
+
+\item
+Any valid sequence of legal moves in number maze $M$ corresponds to a directed path in graph $G$, and vice versa.  In particular, the shortest valid sequence of legal moves from the upper left corner to the lower right corner corresponds to the shortest path in $G$ from $(1,1,0)$ to $(n,n,0)$.
+
+\item
+We can compute this shortest path using breadth-first search.
+
+\item
+Our algorithm runs in $O(V+E) =$ \EMPH{$O(n^2)$ time}.
+
+\end{itemize}
+The graph $G$ is a standard product construction between the basic number-maze graph, described in our solution to problem 1, and a cycle of length $5$.
+\end{Solution}
+\end{enumerate}
+
+
+%----------------------------------------------------------------------
+\newpage
+
+\bigskip
+\noindent
+\textbf{Harder problems to think about later:}
+
+\begin{enumerate}
+\setcounter{enumi}{3}
+\parindent 1.5em \itemsep 2ex
+
+\def\arcTo{\mathord{\Rightarrow}}
+\item
+Now suppose a sequence of moves is considered \emph{valid} if and only if it contains no U-turns.
+
+Describe and analyze an algorithm that either returns the minimum number of moves in a valid solution to a given number maze, or reports correctly that no valid solution exists.
+
+\begin{Solution}
+The main idea is to keep track not only of the position of the token, but the direction of its last move.
+
+First let $G=(V,E)$ be the directed graph of grid squares and legal moves from problem 1.  We construct a new directed graph $G’ = (V’, E’)$ as follows:
+\begin{itemize}
+\item
+The vertices $V’$ correspond to \emph{legal moves} in the number maze, except for a special start vertex indicating that no moves have yet been made.  More formally, we have
+\[
+	V’ = \set{(1,1)} \cup E.
+\]
+Each vertex $\arc{u}{v}$ corresponds to the last move taken by the token; vertex $(1,1)$ corresponds to the token’s start in the upper left corner.  There are at most $4n^2 + 1$ vertices in $V’$.
+
+\item
+The directed edges $E’$ correspond to legal initial moves and valid consecutive pairs of legal moves:
+\begin{itemize}
+\item $(1,1)\arcTo((1,1)\arcto v)$ for every legal move $(1,1)\arcto v\in E$
+\item $(u\arcto v)\arcTo(v\arcto w)$ for each pair of legal moves $u\arcto v\in E$ and $v\arcto w\in E$ that share a grid cell~$v$ and do not point in opposite directions.
+\end{itemize}
+(I’m using double arrows to denote directed edges in $E’$, to distinguish them from edges in $E$.)  There are at most $2$ legal moves from the starting cell, and for any legal move there are at most three valid next moves.  Thus, there are at most $2 + 12n^2$ edges in $E’$.
+
+\item
+The vertices and edges do not have associated values.
+
+\item
+Any valid sequence of $\ell$ legal moves in $M$ corresponds to a directed path in $G’$ with length $\ell$.  For example, the 4-move sequence $(1,1) \arcto (3,1) \arcto (3,7) \arcto (4,7) \arcto (4,4)$ corresponds to the directed path
+\[
+	(1,1)\arcTo
+	((1,1)\arcto(3,1))\arcTo
+	((3,1)\arcto(3,7))\arcTo
+	((3,7)\arcto(4,7))\arcTo
+	((4,7)\arcto(4,4)),
+\]
+which has length $4$. Thus, the shortest valid sequence of legal moves from $(1,1)$ to $(n,n)$ corresponds to the shortest path in $G$ from the start vertex $(1,1)$ to any vertex of the form $u\arcto(n,n)$.
+
+\item
+We can compute this shortest path using breadth-first search.  Specifically, we compute shortest path in $G’$ from $(1,1)$ to every other vertex in $V’$ using breadth-first search, and then find the best last move $u\arcto(n,n)$ by comparing distances by brute force.
+
+\item
+Our algorithm runs in $O(V+E) =$ \EMPH{$O(n^2)$ time}.
+
+\end{itemize}
+\end{Solution}
+
+
+%----------------------------------------------------------------------
+\newpage
+\item
+Now suppose a sequence of moves is considered \emph{valid} if and only if the sequence of move \emph{lengths} is increasing.
+
+Describe and analyze an algorithm that either returns the minimum number of moves in a valid solution to a given number maze, or reports correctly that no valid solution exists.
+
+\begin{Solution}
+We construct a directed graph $G=(V,E)$ as follows.
+\begin{itemize}
+\item
+The vertices of $G$ correspond to (indices of) grid cells and the length of the move that brought the token to that grid cell:
+\[
+	V := \set{i\mid 1\le i\le n}
+		\times \set{j\mid 1\le i\le n}
+		\times \set{\ell\mid 0\le i\le n-1}
+\]
+There are exactly $n^3$ vertices.
+
+\item
+The directed edges of $G$ correspond to legal moves; more formally, $E = E_\leftrightarrow \cup E_\updownarrow$, where
+\begin{align*}
+	E_\leftrightarrow := {}&
+		\Setbar{(i,j,\ell)\arcto(i,j’,\abs{j-j’})\strut}
+					{\abs{j-j’} = M[i,j] > \ell}
+				&& \text{[horizontal edges]} \\
+	E_\updownarrow := {}&
+		 \Setbar{(i,j,\ell)\arcto(i’,j,\abs{i-i’})\strut}
+		 			{\abs{i-i’} = M[i,j] > \ell}
+				&& \text{[vertical edges]}
+\end{align*}
+There are at most $4n^3$ edges.
+
+\item
+The vertices and edges do not have associated values.
+
+\item
+Any sequence of legal moves in number maze $M$ corresponds to a directed path in graph $G$, and vice versa.  In particular, the shortest sequence of legal moves from the upper left corner to the lower right corner corresponds to the shortest path in $G$ from the start vertex $(1,1,0)$ to any vertex of the form $(n,n,\ell)$.
+
+\item
+We can compute shortest paths from $(1,1,0)$ to every vertex in $V$ using breadth-first search, after which we can find the shortest shortest path to $(n,n,\cdot)$ by brute force.
+
+\item
+Our algorithm runs in $O(V+E) =$ \EMPH{$O(n^3)$ time}.
+
+\end{itemize}
+This graph $G$ is a \emph{subgraph} of the standard product construction between the basic number-maze graph, described in our solution to problem 1, and a complete directed acyclic graph with $n$ vertices.
+\end{Solution}
+
+
+%----------------------------------------------------------------------
+\newpage
+\item
+Finally, suppose a sequence of moves is considered \emph{valid} if and only if the sequence of move lengths is a palindrome.  (A palindrome is any sequence that is equal to its reversal.)
+
+Describe and analyze an algorithm that either returns the minimum number of moves in a valid solution to a given number maze, or reports correctly that no valid solution exists.
+
+\begin{Solution}
+The main idea is to keep track of both ends of the move sequence and move inward.  Let $G=(V,E)$ be the directed graph constructed in our solution ot problem $1$.  We construct a new directed graph $G’=(V’,E’)$ as follows.
+\begin{itemize}
+\item
+The vertices of $G’$ correspond to \emph{pairs} of vertices in $G$
+\[
+	V’ := V\times V = \Setbar{(i,j;k,l)\strut}{1\le i,j,k,l \le n}
+\]
+There are exactly $n^4$ vertices.
+
+\item
+The directed edges of $G$ correspond to pairs of legal moves, forward from the first cell and backward from the second cell, with the same length
+\[
+	E’ = \Setbar{(i,j;k,l)\arcto (i’,j’;k’,l’)\strut}
+				{\begin{gathered}
+					(i,j)\arcto(i’,j’)\in E \\
+				 	(k’,l’)\arcto(k,l)\in E \\
+					M[i,j] = M[k’,l’]
+				\end{gathered}}
+\]
+There are at most $16n^4$ edges.
+
+\item
+The vertices and edges do not have associated values/
+
+\item
+Each \emph{palindromic} sequence of legal moves in number maze $M$ corresponds to a directed path in graph $G$, and vice versa.  In particular, the shortest palindromic sequence of legal moves from the upper left corner to the lower right corner corresponds to the shortest path in $G$ from $(1,1;n,n)$ to any vertex of the form $(i,j;i,j)$ (for even-length palindromes) or $(i,j;k,l)$ where $(i,j)\arcto(k,l)\in E$ (for odd-length palindromes).
+
+\item
+We can compute shortest paths from $(1,1;n,n)$ to every vertex in $V’$ using breadth-first search, after which we can find the shortest relevant shortest path by brute force comparison.
+
+\item
+Our algorithm runs in $O(V+E) =$ \EMPH{$O(n^4)$ time}.
+
+\end{itemize}
+The graph $G’$ is a standard product construction between the basic number-maze graph $G$ and its reversal.
+\end{Solution}
+\end{enumerate}
+
+
+
+
+%----------------------------------------------------------------------
+
+
+\end{document}
